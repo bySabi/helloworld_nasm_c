@@ -4,15 +4,22 @@
 CXX := gcc
 CXXFLAGS := -m32
 LDFLAGS := -lc
-NASMARCH := elf32
+NASMFLAGS := -f elf32
+
+ifeq ($(OS),Windows_NT)
+#CXXFLAGS += 
+LDFLAGS =
+NASMFLAGS := -f win32 --prefix _
+endif
+
 
 all: helloworld
 
 helloworld: main.c hello.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 hello.o: hello.asm
-	nasm -f $(NASMARCH) -o $@ $<
+	nasm $(NASMFLAGS) -o $@ $<
 
 
 clean:
